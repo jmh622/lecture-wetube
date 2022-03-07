@@ -1,0 +1,27 @@
+{
+  "name": "wetube",
+  "version": "1.0.0",
+  "description": "Wetube is a lecture on nomadcoders. built using NodeJS, Express, MongoDB and ES6 👍",
+  "scripts": {
+    "dev": "nodemon --exec babel-node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmh622/lecture-wetube.git"
+  },
+  "author": "muho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmh622/lecture-wetube/issues"
+  },
+  "homepage": "https://github.com/jmh622/lecture-wetube#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "nodemon": "^2.0.15"
+  }
+}
