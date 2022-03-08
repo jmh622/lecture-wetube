@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Wetube is a lecture on nomadcoders. built using NodeJS, Express, MongoDB and ES6 👍",
   "scripts": {
-    "dev": "nodemon --exec babel-node index"
+    "dev": "nodemon --exec babel-node ./src/server"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,8 @@
   },
   "homepage": "https://github.com/jmh622/lecture-wetube#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
