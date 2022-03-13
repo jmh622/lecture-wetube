@@ -17,5 +17,4 @@ app.use('/', globalRouter);
 app.use('/users', userRouter);
 app.use('/videos', videoRouter);
 
-const PORT = 4000;
-app.listen(PORT, () => console.log(`✅ Server is running => http://localhost:${PORT} 🚀`));
+export default app;
