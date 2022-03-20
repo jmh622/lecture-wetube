@@ -14,8 +14,15 @@ html(lang='ko')
                         a(href="/videos/upload") Upload Video
                     li 
                         a(href="/search") Search Video
-                    li
-                        a(href="/join") Join
+                    if !loggedIn
+                        li
+                            a(href="/join") Join
+                        li
+                            a(href="/login") Login
+                    else
+                        li
+                            a(href="/logout") Logout
+                        li hello, #{loggedInUser.name}
         main 
             block content
     include partials/footer
