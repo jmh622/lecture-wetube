@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import fetch from 'node-fetch';
 import User from '../models/User';
 
 export const getJoin = (req, res) => res.render('join', { pateTitle: 'Join' });
@@ -21,6 +22,7 @@ export const postJoin = async (req, res) => {
       username,
       password,
       location,
+      socialOnly: false,
     });
     return res.status(201).redirect('/login');
   } catch (error) {
@@ -47,5 +49,75 @@ export const postLogin = async (req, res) => {
 
   return res.redirect('/');
 };
-export const logout = (req, res) => res.send('Logout');
+export const logout = (req, res) => {
+  req.session.destroy();
+  return res.redirect('/');
+};
 export const see = (req, res) => res.send('See User');
+export const startGithubLogin = (req, res) => {
+  const baseUrl = 'https://github.com/login/oauth/authorize';
+  const config = {
+    client_id: process.env.GH_CLIENT_ID,
+    scope: 'read:user user:email',
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  return res.redirect(finalUrl);
+};
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = 'https://github.com/login/oauth/access_token';
+  const config = {
+    client_id: process.env.GH_CLIENT_ID,
+    client_secret: process.env.GH_SECRET_SECRET,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const tokenData = await (
+    await fetch(finalUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+  ).json();
+  if ('access_token' in tokenData) {
+    const { access_token } = tokenData;
+    const apiUrl = 'https://api.github.com';
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    const emailObj = emailData.find((email) => email.primary === true && email.verified === true);
+    if (!emailObj) {
+      res.redirect('/login');
+    }
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      user = await User.create({
+        name: userData.name,
+        email: emailObj.email,
+        username: userData.login,
+        password: '',
+        location: userData.location,
+        socialOnly: true,
+        avatarUrl: userData.avatar_url,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect('/');
+  } else {
+    res.redirect('/login');
+  }
+};
