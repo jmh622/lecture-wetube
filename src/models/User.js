@@ -9,12 +9,13 @@ const userSchema = mongoose.Schema({
   location: String,
   socialOnly: { type: Boolean },
   avatarUrl: String,
+  videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
 });
 
 userSchema.pre('save', async function () {
-  console.log(`before hashing password: ${this.password}`);
-  this.password = await bcrypt.hash(this.password, 5);
-  console.log(`after hashing password: ${this.password}`);
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
 });
 
 const User = mongoose.model('User', userSchema);
