@@ -6,6 +6,7 @@ const totalTime = document.getElementById('totalTime');
 const volumeRange = document.getElementById('volume');
 
 let volumeValue = video.volume;
+volumeRange.value = volumeValue;
 
 video.addEventListener('loadedmetadata', () => {
   totalTime.innerText = Math.floor(video.duration);
