@@ -20,13 +20,19 @@ video.volume = volumeValue;
 const formatTime = (seconds) => new Date(seconds * 1000).toISOString().substr(14, 5);
 const hideControls = () => videoControls.classList.remove('showing');
 
-video.addEventListener('loadeddata', () => {
+video.addEventListener('loadedmetadata', () => {
   totalTime.innerText = formatTime(Math.floor(video.duration));
   timeline.max = Math.floor(video.duration);
 });
 video.addEventListener('timeupdate', () => {
   currentTime.innerText = formatTime(Math.floor(video.currentTime));
   timeline.value = Math.floor(video.currentTime);
+});
+video.addEventListener('ended', () => {
+  const { id } = videoContainer.dataset;
+  fetch(`/api/videos/${id}/view`, {
+    method: 'POST',
+  });
 });
 playBtn.addEventListener('click', () => {
   if (video.paused) {
