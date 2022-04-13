@@ -61,7 +61,7 @@ export const getUpload = (req, res) => res.render('upload', { pageTitle: 'Upload
 export const postUpload = async (req, res) => {
   const {
     body: { title, description, hashtags },
-    file: { location },
+    file,
     session: {
       user: { _id },
     },
@@ -71,7 +71,7 @@ export const postUpload = async (req, res) => {
       title,
       description,
       hashtags: Video.formatHashtags(hashtags),
-      fileUrl: location,
+      fileUrl: isHeroku ? file.location : `/${file.path}`,
       owner: _id,
     });
     const user = await User.findById(_id);
