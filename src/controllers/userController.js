@@ -45,7 +45,7 @@ export const postEdit = async (req, res) => {
       name,
       email,
       location,
-      avatarUrl: file ? (isHeroku ? file.location : `/${file.path}`) : avatarUrl,
+      avatarUrl: file ? (res.locals.isHeroku ? file.location : `/${file.path}`) : avatarUrl,
     },
     { new: true }
   );

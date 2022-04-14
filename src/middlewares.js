@@ -9,10 +9,12 @@ const s3 = new aws.S3({
   },
 });
 
+const isHeroku = process.env.NODE_ENV === 'production';
+
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.loggedInUser = res.locals.loggedIn ? req.session.user : undefined;
-  res.locals.isHeroku = process.env.NODE_ENV === 'production';
+  res.locals.isHeroku = isHeroku;
   next();
 };
 
