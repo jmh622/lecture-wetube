@@ -11,7 +11,9 @@ const addComment = (text, id) => {
   const span = document.createElement('span');
   span.innerText = ` ${text}`;
   const span2 = document.createElement('span');
+  span2.className = 'remove-comments';
   span2.innerText = '❌';
+  span2.addEventListener('click', handleRemoveComment);
   newComment.appendChild(icon);
   newComment.appendChild(span);
   newComment.appendChild(span2);
@@ -46,3 +48,21 @@ const handleSubmit = async (event) => {
 if (form) {
   form.addEventListener('submit', handleSubmit);
 }
+
+const handleRemoveComment = async (evt) => {
+  const {
+    target: { parentNode },
+  } = evt;
+
+  const response = await fetch(`/api/videos/${parentNode.dataset.id}/comment`, {
+    method: 'DELETE',
+  });
+
+  if (response.status === 204) {
+    parentNode.remove();
+  }
+};
+
+document.querySelectorAll('.remove-comments').forEach((el) => {
+  el.addEventListener('click', handleRemoveComment);
+});
